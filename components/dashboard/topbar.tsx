@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { Bell, HelpCircle, Search } from "lucide-react";
+import { Bell, HelpCircle, Search, Command } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export function Topbar({ title, subtitle }: { title?: string; subtitle?: string }) {
   return (
@@ -13,15 +14,32 @@ export function Topbar({ title, subtitle }: { title?: string; subtitle?: string 
       </div>
 
       <div className="flex items-center gap-2">
-        <div className="hidden md:flex items-center gap-2 px-3 h-9 rounded-lg bg-slate-100 text-sm text-slate-500 w-64">
+        <button
+          onClick={() => toast.info("搜索功能即将上线")}
+          className="hidden md:flex items-center gap-2 px-3 h-9 rounded-lg bg-slate-100 text-sm text-slate-500 hover:bg-slate-200 hover:text-slate-700 transition-colors w-64"
+        >
           <Search className="w-4 h-4" />
-          <span>搜索...</span>
-          <span className="ml-auto text-xs text-slate-400 font-mono">⌘K</span>
-        </div>
-        <button className="w-9 h-9 rounded-lg flex items-center justify-center hover:bg-slate-100 text-slate-500">
+          <span>搜索项目、模板...</span>
+          <span className="ml-auto text-xs text-slate-400 font-mono flex items-center gap-1">
+            <Command className="w-3 h-3" />K
+          </span>
+        </button>
+        <button
+          onClick={() => toast.info("帮助中心：查看使用文档", {
+            description: "Demo 暂未接入完整文档站",
+          })}
+          className="w-9 h-9 rounded-lg flex items-center justify-center hover:bg-slate-100 text-slate-500 transition-colors"
+          aria-label="帮助"
+        >
           <HelpCircle className="w-4 h-4" />
         </button>
-        <button className="w-9 h-9 rounded-lg flex items-center justify-center hover:bg-slate-100 text-slate-500 relative">
+        <button
+          onClick={() => toast.info("暂无新通知", {
+            description: "新功能发布时会在这里通知你",
+          })}
+          className="w-9 h-9 rounded-lg flex items-center justify-center hover:bg-slate-100 text-slate-500 relative transition-colors"
+          aria-label="通知"
+        >
           <Bell className="w-4 h-4" />
           <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500" />
         </button>

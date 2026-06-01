@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAppStore } from "@/lib/store";
 
 const navItems = [
   { href: "/dashboard", label: "工作台", icon: Sparkles },
@@ -23,6 +24,41 @@ const navItems = [
   { href: "/history", label: "历史记录", icon: History },
   { href: "/billing", label: "套餐", icon: CreditCard },
 ];
+
+const PLAN_LIMITS = {
+  free: 20,
+  starter: 100,
+  pro: 500,
+  enterprise: 2000,
+};
+
+function UsageCard() {
+  const usageImages = useAppStore((s) => s.usageThisMonth.images);
+  const plan = useAppStore((s) => s.user?.plan || "pro");
+  const limit = PLAN_LIMITS[plan as keyof typeof PLAN_LIMITS] || 500;
+  const pct = Math.min((usageImages / limit) * 100, 100);
+
+  return (
+    <div className="p-4 m-3 rounded-xl bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-100">
+      <div className="text-xs font-semibold text-blue-700 mb-1">本月使用</div>
+      <div className="text-lg font-bold text-slate-900">
+        {usageImages} / {limit}
+      </div>
+      <div className="text-xs text-slate-500 mb-2">张图</div>
+      <div className="h-1.5 bg-blue-100 rounded-full overflow-hidden">
+        <div
+          className="h-full bg-gradient-to-r from-blue-500 to-cyan-500 transition-all duration-500"
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+      <Link href="/billing">
+        <button className="mt-3 w-full text-xs font-semibold text-blue-600 hover:text-blue-700">
+          {usageImages >= limit ? "已达上限，升级 →" : "升级套餐 →"}
+        </button>
+      </Link>
+    </div>
+  );
+}
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -68,19 +104,7 @@ export function Sidebar() {
       </nav>
 
       {/* Usage Card */}
-      <div className="p-4 m-3 rounded-xl bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-100">
-        <div className="text-xs font-semibold text-blue-700 mb-1">本月使用</div>
-        <div className="text-lg font-bold text-slate-900">128 / 500</div>
-        <div className="text-xs text-slate-500 mb-2">张图</div>
-        <div className="h-1.5 bg-blue-100 rounded-full overflow-hidden">
-          <div className="h-full bg-gradient-to-r from-blue-500 to-cyan-500" style={{ width: "25.6%" }} />
-        </div>
-        <Link href="/billing">
-          <button className="mt-3 w-full text-xs font-semibold text-blue-600 hover:text-blue-700">
-            升级套餐 →
-          </button>
-        </Link>
-      </div>
+      <UsageCard />
 
       {/* User Menu */}
       <div className="p-3 border-t border-slate-200 relative">
@@ -108,16 +132,30 @@ export function Sidebar() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
-              className="absolute bottom-full left-3 right-3 mb-2 bg-white border border-slate-200 rounded-xl shadow-elevated overflow-hidden"
+              className="absolute bottom-full left-3 right-3 mb-2 bg-white border border-slate-200 rounded-xl shadow-elevated overflow-hidden z-20"
             >
               <Link
                 href="/settings"
                 className="flex items-center gap-2 px-3 py-2.5 text-sm text-slate-700 hover:bg-slate-50"
+                onClick={() => setUserMenuOpen(false)}
               >
                 <Settings className="w-4 h-4" />
                 设置
               </Link>
-              <button className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-red-600 hover:bg-red-50 border-t border-slate-100">
+              <Link
+                href="/billing"
+                className="flex items-center gap-2 px-3 py-2.5 text-sm text-slate-700 hover:bg-slate-50 border-t border-slate-100"
+                onClick={() => setUserMenuOpen(false)}
+              >
+                <CreditCard className="w-4 h-4" />
+                套餐与账单
+              </Link>
+              <button
+                onClick={() => {
+                  alert("这是 demo，登录功能未实现");
+                }}
+                className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-red-600 hover:bg-red-50 border-t border-slate-100"
+              >
                 <LogOut className="w-4 h-4" />
                 退出登录
               </button>

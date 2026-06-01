@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn, downloadImage, generateId } from "@/lib/utils";
 import { removeBackgroundClient } from "@/lib/ai/background-removal";
 import { generateImagesViaPollinations } from "@/lib/ai/pollinations";
+import { useAppStore } from "@/lib/store";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import {
@@ -83,11 +84,14 @@ const platforms: { id: Platform; name: string; size: string; icon: string }[] = 
 
 export default function ImagesPage() {
   const [mode, setMode] = useState<Mode>("background");
-  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const uploadedImage = useAppStore((s) => s.uploadedProductImage);
+  const setUploadedImage = useAppStore((s) => s.setUploadedProductImage);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [results, setResults] = useState<{ id: string; url: string; type: string; label: string }[]>([]);
   const [dragging, setDragging] = useState(false);
+  const addAsset = useAppStore((s) => s.addAsset);
+  const incrementUsage = useAppStore((s) => s.incrementUsage);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // 场景图设置
@@ -149,10 +153,23 @@ export default function ImagesPage() {
         const data = await removeBackgroundClient(uploadedImage, (progress) => {
           // 可以更新 UI 进度
         });
-        setResults([
+        const resultItems = [
           { id: generateId(), url: data.image, type: "background-removed", label: "透明背景" },
           { id: generateId(), url: data.whiteBg, type: "white-bg", label: "白底主图" },
-        ]);
+        ];
+        setResults(resultItems);
+        // 存到全局 store
+        addAsset({
+          type: "image",
+          name: "背景移除",
+          thumbnail: data.whiteBg,
+          url: data.whiteBg,
+          count: resultItems.length,
+          mode: "background",
+          cost: 0.05,
+          status: "done",
+        });
+        incrementUsage("image", resultItems.length, 0.05);
         toast.success("生成完成！");
       } else if (mode === "scene") {
         // 场景图生成（直接调 Pollinations，绕过 Next.js API 路由问题）
@@ -162,28 +179,48 @@ export default function ImagesPage() {
           `${prompt}, high quality, professional product photography, 4k`,
           3
         );
-        setResults(
-          images.map((url, i) => ({
-            id: generateId(),
-            url,
-            type: "scene",
-            label: `场景图 ${i + 1}`,
-          }))
-        );
+        const resultItems = images.map((url, i) => ({
+          id: generateId(),
+          url,
+          type: "scene",
+          label: `场景图 ${i + 1}`,
+        }));
+        setResults(resultItems);
+        addAsset({
+          type: "image",
+          name: `AI 场景图 - ${scene.name}`,
+          thumbnail: images[0],
+          url: images[0],
+          count: images.length,
+          mode: "scene",
+          cost: 0.15,
+          status: "done",
+        });
+        incrementUsage("image", images.length, 0.15);
         toast.success(`已生成 ${images.length} 张场景图`);
       } else if (mode === "model") {
         // AI 模特图
         const model = modelOptions.find((m) => m.id === selectedModel);
         const prompt = `A ${model?.name} model wearing/using the product, ${modelPose} pose, professional fashion photography, studio lighting`;
         const images = await generateImagesViaPollinations(prompt, 3);
-        setResults(
-          images.map((url, i) => ({
-            id: generateId(),
-            url,
-            type: "model",
-            label: `${model?.name} ${i + 1}`,
-          }))
-        );
+        const resultItems = images.map((url, i) => ({
+          id: generateId(),
+          url,
+          type: "model",
+          label: `${model?.name} ${i + 1}`,
+        }));
+        setResults(resultItems);
+        addAsset({
+          type: "image",
+          name: `AI 模特图 - ${model?.name}`,
+          thumbnail: images[0],
+          url: images[0],
+          count: images.length,
+          mode: "model",
+          cost: 0.18,
+          status: "done",
+        });
+        incrementUsage("image", images.length, 0.18);
         toast.success(`已生成 ${images.length} 张模特图`);
       } else if (mode === "batch") {
         // 批量处理：组合所有
@@ -207,6 +244,17 @@ export default function ImagesPage() {
         });
 
         setResults(allResults);
+        addAsset({
+          type: "image",
+          name: "批量处理 - 全套素材",
+          thumbnail: allResults[0]?.url || bgData.whiteBg,
+          url: allResults[0]?.url || bgData.whiteBg,
+          count: allResults.length,
+          mode: "batch",
+          cost: 0.35,
+          status: "done",
+        });
+        incrementUsage("image", allResults.length, 0.35);
         toast.success(`批量生成 ${allResults.length} 张图完成！`);
       }
     } catch (err: any) {
@@ -221,6 +269,7 @@ export default function ImagesPage() {
     setUploadedImage(null);
     setUploadedFile(null);
     setResults([]);
+    toast.success("已清空，可重新上传");
   };
 
   return (

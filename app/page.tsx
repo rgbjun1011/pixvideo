@@ -882,16 +882,35 @@ function Footer() {
             </p>
           </div>
           {[
-            { title: "产品", links: ["AI 商品图", "AI 视频", "BizVid 小商家版", "定价"] },
-            { title: "资源", links: ["文档", "案例", "博客", "API"] },
+            {
+              title: "产品",
+              links: [
+                { label: "AI 商品图", href: "/images" },
+                { label: "AI 视频", href: "/videos" },
+                { label: "BizVid 小商家版", href: "/images" },
+                { label: "定价", href: "#pricing" },
+              ],
+            },
+            {
+              title: "资源",
+              links: [
+                { label: "文档", href: "/login" },
+                { label: "案例", href: "/images" },
+                { label: "博客", href: "/login" },
+                { label: "API", href: "/login" },
+              ],
+            },
           ].map((col) => (
             <div key={col.title}>
               <div className="font-semibold text-slate-900 text-sm mb-3">{col.title}</div>
               <ul className="space-y-2 text-sm text-slate-500">
                 {col.links.map((l) => (
-                  <li key={l}>
-                    <Link href="#" className="hover:text-slate-900 transition-colors">
-                      {l}
+                  <li key={l.label}>
+                    <Link
+                      href={l.href}
+                      className="hover:text-slate-900 transition-colors"
+                    >
+                      {l.label}
                     </Link>
                   </li>
                 ))}
@@ -902,10 +921,10 @@ function Footer() {
         <div className="mt-12 pt-8 border-t border-slate-200 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-500">
           <div>© 2026 PixVideo. All rights reserved.</div>
           <div className="flex gap-6">
-            <Link href="#" className="hover:text-slate-900">
+            <Link href="/login" className="hover:text-slate-900">
               隐私政策
             </Link>
-            <Link href="#" className="hover:text-slate-900">
+            <Link href="/login" className="hover:text-slate-900">
               服务条款
             </Link>
           </div>
