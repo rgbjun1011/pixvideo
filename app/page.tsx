@@ -378,34 +378,7 @@ function HeroPreview() {
   );
 }
 
-// ============= STATS =============
-function Stats() {
-  return (
-    <section className="py-12 border-y border-slate-100 bg-slate-50/50">
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          {[
-            { num: "1200万+", label: "跨境电商卖家" },
-            { num: "3 分钟", label: "从URL到素材" },
-            { num: "60%+", label: "毛利率" },
-            { num: "$1.79M", label: "目标 ARR" },
-          ].map((s, i) => (
-            <motion.div
-              key={s.label}
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: i * 0.1 }}
-              viewport={{ once: true }}
-            >
-              <div className="text-2xl md:text-3xl font-bold text-slate-900">{s.num}</div>
-              <div className="text-sm text-slate-500 mt-1">{s.label}</div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
+// ============= STATS (removed: 创业自嗨数字) =============
 
 // ============= FEATURES =============
 function Features() {
@@ -466,8 +439,7 @@ function Features() {
             <span className="text-gradient">一个工作流</span>
           </h2>
           <p className="mt-4 text-lg text-slate-600">
-            市面上唯一同时做好「图片 + 视频」一站式的工具。
-            卖家不用在 5 个工具之间切换。
+            图和视频一套搞定，不用在多个工具之间切换。
           </p>
         </div>
 
@@ -619,10 +591,6 @@ function Personas() {
             <br />
             <span className="text-gradient">是为这 3 类人</span>
           </h2>
-          <p className="mt-4 text-lg text-slate-600">
-            25-40 万家有付费意愿+能力的跨境卖家。
-            不是"1200 万"的虚数。
-          </p>
         </div>
 
         <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -803,13 +771,8 @@ function Testimonials() {
     <section id="testimonials" className="py-20 md:py-32">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center max-w-2xl mx-auto">
-          <Badge variant="purple" className="mb-4">
-            早期信号
-          </Badge>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight">
-            来自种子用户的
-            <br />
-            <span className="text-gradient-warm">真实反馈</span>
+            用户怎么说
           </h2>
         </div>
 
@@ -1012,7 +975,6 @@ export default function HomePage() {
     <main>
       <Header />
       <Hero />
-      <Stats />
       <Features />
       <HowItWorks />
       <Personas />
