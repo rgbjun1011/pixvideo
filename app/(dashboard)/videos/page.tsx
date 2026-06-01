@@ -515,9 +515,26 @@ export default function VideosPage() {
 
 function EmptyVideoState() {
   const previewItems = [
-    { gradient: "from-pink-400 to-rose-500", title: "UGC 种草视频", emoji: "🌟" },
-    { gradient: "from-blue-400 to-cyan-500", title: "产品演示", emoji: "📦" },
-    { gradient: "from-amber-400 to-orange-500", title: "开箱种草", emoji: "🎁" },
+    {
+      title: "UGC 种草视频",
+      author: "@beauty.mika",
+      views: "234K",
+      seed: "vid-ugc-1",
+      badge: "爆款",
+    },
+    {
+      title: "产品演示",
+      author: "@tech.review",
+      views: "89K",
+      seed: "vid-demo-1",
+    },
+    {
+      title: "开箱种草",
+      author: "@unbox.daily",
+      views: "156K",
+      seed: "vid-unbox-1",
+      badge: "新",
+    },
   ];
 
   return (
@@ -538,22 +555,33 @@ function EmptyVideoState() {
             key={p.title}
             className="aspect-[9/16] rounded-xl overflow-hidden border border-slate-200 bg-slate-50 relative group cursor-pointer"
           >
-            <div
-              className={cn(
-                "w-full h-full bg-gradient-to-br flex items-center justify-center text-5xl",
-                p.gradient
-              )}
-            >
-              {p.emoji}
+            <img
+              src={`https://picsum.photos/seed/${p.seed}/240/420`}
+              alt={p.title}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20" />
+            {p.badge && (
+              <div className="absolute top-2 left-2">
+                <Badge variant="danger" size="sm" className="text-[9px]">
+                  🔥 {p.badge}
+                </Badge>
+              </div>
+            )}
+            <div className="absolute top-2 right-2 flex items-center gap-1 px-1.5 py-0.5 rounded bg-black/50 backdrop-blur text-[10px] text-white">
+              <Play className="w-2.5 h-2.5 fill-white" />
+              5s
             </div>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
             <div className="absolute bottom-2 left-2 right-2">
               <div className="text-xs font-semibold text-white">{p.title}</div>
-              <div className="text-[10px] text-white/80 mt-0.5">5s · 1080×1920</div>
+              <div className="flex items-center justify-between text-[10px] text-white/80 mt-0.5">
+                <span>{p.author}</span>
+                <span className="font-mono">{p.views}</span>
+              </div>
             </div>
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-              <div className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center">
-                <Play className="w-4 h-4 text-slate-900 ml-0.5" />
+              <div className="w-12 h-12 rounded-full bg-white/95 flex items-center justify-center shadow-lg">
+                <Play className="w-5 h-5 text-slate-900 ml-0.5 fill-slate-900" />
               </div>
             </div>
           </div>
@@ -579,6 +607,23 @@ function VideoJobCard({ job }: { job: VideoJob }) {
         <div className="w-20 aspect-[9/16] rounded-lg overflow-hidden flex-shrink-0 relative bg-slate-100">
           {job.status === "done" && job.thumbnail ? (
             <img src={job.thumbnail} alt="" className="w-full h-full object-cover" />
+          ) : job.status === "processing" ? (
+            <>
+              <img
+                src={`https://picsum.photos/seed/${job.id}/180/320`}
+                alt=""
+                className="w-full h-full object-cover opacity-50 blur-sm"
+              />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Loader2 className="w-4 h-4 text-white animate-spin" />
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20">
+                <div
+                  className="h-full bg-gradient-to-r from-blue-500 to-cyan-500"
+                  style={{ width: `${job.progress}%` }}
+                />
+              </div>
+            </>
           ) : (
             <div
               className={cn(
@@ -590,8 +635,8 @@ function VideoJobCard({ job }: { job: VideoJob }) {
             </div>
           )}
           {job.status === "done" && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-              <Play className="w-4 h-4 text-white" />
+            <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/50 transition-colors">
+              <Play className="w-4 h-4 text-white fill-white" />
             </div>
           )}
         </div>

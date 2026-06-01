@@ -161,9 +161,24 @@ export default function HistoryPage() {
                     <div className="font-semibold text-slate-900 text-sm line-clamp-1">
                       {item.name}
                     </div>
-                    <div className="flex items-center justify-between mt-2 text-xs text-slate-500">
-                      <span>{formatRelativeTime(item.createdAt)}</span>
-                      <span className="font-mono">${item.cost.toFixed(2)}</span>
+                    <div className="flex items-center gap-2 mt-1.5 text-[11px] text-slate-500">
+                      <span className="font-mono">
+                        {item.type === "image" ? "2000×2000" : "1080×1920"}
+                      </span>
+                      <span>·</span>
+                      <span className="font-mono">
+                        {(item.cost * 18).toFixed(1)} MB
+                      </span>
+                      <span>·</span>
+                      <span className="font-mono">PNG</span>
+                    </div>
+                    <div className="flex items-center justify-between mt-2.5 text-xs">
+                      <span className="text-slate-500">
+                        {formatRelativeTime(item.createdAt)}
+                      </span>
+                      <span className="font-mono text-slate-900 font-semibold">
+                        ${item.cost.toFixed(2)}
+                      </span>
                     </div>
                     <div className="mt-3 flex gap-1.5">
                       <Button

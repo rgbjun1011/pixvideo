@@ -54,9 +54,42 @@ const plans = [
 ];
 
 const invoices = [
-  { date: "2026-05-01", amount: "$79.00", status: "已付", plan: "Pro" },
-  { date: "2026-04-01", amount: "$79.00", status: "已付", plan: "Pro" },
-  { date: "2026-03-01", amount: "$79.00", status: "已付", plan: "Pro" },
+  {
+    id: "INV-2026-0501",
+    date: "2026-05-01",
+    amount: "$79.00",
+    subtotal: "$72.48",
+    tax: "$6.52",
+    status: "paid",
+    statusText: "已付",
+    plan: "Pro 月度",
+    card: "Visa •••• 4242",
+    period: "2026-05-01 ~ 2026-05-31",
+  },
+  {
+    id: "INV-2026-0401",
+    date: "2026-04-01",
+    amount: "$79.00",
+    subtotal: "$72.48",
+    tax: "$6.52",
+    status: "paid",
+    statusText: "已付",
+    plan: "Pro 月度",
+    card: "Visa •••• 4242",
+    period: "2026-04-01 ~ 2026-04-30",
+  },
+  {
+    id: "INV-2026-0301",
+    date: "2026-03-01",
+    amount: "$79.00",
+    subtotal: "$72.48",
+    tax: "$6.52",
+    status: "paid",
+    statusText: "已付",
+    plan: "Pro 月度",
+    card: "Visa •••• 4242",
+    period: "2026-03-01 ~ 2026-03-31",
+  },
 ];
 
 export default function BillingPage() {
@@ -176,10 +209,62 @@ export default function BillingPage() {
           </div>
         </Card>
 
+        {/* Billing Info */}
+        <Card className="p-6">
+          <h3 className="font-semibold text-slate-900 mb-4">账单信息</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+            <div>
+              <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                账单接收方
+              </div>
+              <div className="space-y-1">
+                <div className="font-semibold text-slate-900">WaveAudio 跨境电商有限公司</div>
+                <div className="text-slate-600">Lisa Wang</div>
+                <div className="text-slate-600">lisa@waveaudio.com</div>
+                <div className="text-slate-500 text-xs mt-1">
+                  广东省深圳市南山区科技园南区 12 号楼 9 楼
+                </div>
+                <div className="text-slate-500 text-xs">VAT ID: CN 91440300MA5F8X9P</div>
+              </div>
+              <Button variant="outline" size="sm" className="mt-3 h-7 text-xs">
+                更新账单信息
+              </Button>
+            </div>
+            <div>
+              <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                税务信息
+              </div>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-slate-500">税率</span>
+                  <span className="text-slate-900 font-mono">9% VAT</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">币种</span>
+                  <span className="text-slate-900 font-mono">USD</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">下次扣款</span>
+                  <span className="text-slate-900">2026-07-01</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">下次扣款金额</span>
+                  <span className="text-slate-900 font-mono">$79.00</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Card>
+
         {/* Invoices */}
         <Card className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-slate-900">历史发票</h3>
+            <div>
+              <h3 className="font-semibold text-slate-900">历史发票</h3>
+              <p className="text-xs text-slate-500 mt-0.5">
+                含 Stripe 自动开具的 PDF · 永久可下载
+              </p>
+            </div>
             <Button variant="ghost" size="sm">
               <Download className="w-3.5 h-3.5" />
               全部下载
@@ -188,22 +273,35 @@ export default function BillingPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-slate-200">
-                <th className="text-left py-2 font-semibold text-slate-500 text-xs uppercase">日期</th>
-                <th className="text-left py-2 font-semibold text-slate-500 text-xs uppercase">套餐</th>
-                <th className="text-left py-2 font-semibold text-slate-500 text-xs uppercase">金额</th>
+                <th className="text-left py-2 font-semibold text-slate-500 text-xs uppercase">发票号</th>
+                <th className="text-left py-2 font-semibold text-slate-500 text-xs uppercase">期间</th>
+                <th className="text-left py-2 font-semibold text-slate-500 text-xs uppercase">小计</th>
+                <th className="text-left py-2 font-semibold text-slate-500 text-xs uppercase">税</th>
+                <th className="text-left py-2 font-semibold text-slate-500 text-xs uppercase">总额</th>
                 <th className="text-left py-2 font-semibold text-slate-500 text-xs uppercase">状态</th>
                 <th className="text-right py-2 font-semibold text-slate-500 text-xs uppercase">操作</th>
               </tr>
             </thead>
             <tbody>
               {invoices.map((inv) => (
-                <tr key={inv.date} className="border-b border-slate-100 last:border-0">
-                  <td className="py-3 text-slate-700">{inv.date}</td>
-                  <td className="py-3 text-slate-700">{inv.plan}</td>
-                  <td className="py-3 font-mono text-slate-900">{inv.amount}</td>
+                <tr
+                  key={inv.id}
+                  className="border-b border-slate-100 last:border-0 hover:bg-slate-50/50"
+                >
+                  <td className="py-3">
+                    <div className="font-mono text-xs text-slate-900">{inv.id}</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">{inv.date}</div>
+                  </td>
+                  <td className="py-3 text-xs text-slate-600 font-mono">{inv.period}</td>
+                  <td className="py-3 font-mono text-slate-700 text-xs">{inv.subtotal}</td>
+                  <td className="py-3 font-mono text-slate-500 text-xs">{inv.tax}</td>
+                  <td className="py-3 font-mono text-slate-900 font-semibold">
+                    {inv.amount}
+                  </td>
                   <td className="py-3">
                     <Badge variant="success" size="sm">
-                      {inv.status}
+                      <Check className="w-2.5 h-2.5" />
+                      {inv.statusText}
                     </Badge>
                   </td>
                   <td className="py-3 text-right">

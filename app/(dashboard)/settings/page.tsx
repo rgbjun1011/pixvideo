@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { User, Bell, Lock, CreditCard, Trash2, Save } from "lucide-react";
 import { useState } from "react";
 import { useAppStore } from "@/lib/store";
+import { getAvatarUrl } from "@/lib/avatars";
 import { toast } from "sonner";
 
 export default function SettingsPage() {
@@ -44,6 +45,22 @@ export default function SettingsPage() {
               <div>
                 <h3 className="font-semibold text-slate-900">个人资料</h3>
                 <p className="text-xs text-slate-500">更新你的姓名和邮箱</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 mb-5 pb-5 border-b border-slate-100">
+              <img
+                src={getAvatarUrl(email || "lisa", "female")}
+                alt="avatar"
+                className="w-16 h-16 rounded-full object-cover ring-2 ring-slate-100"
+              />
+              <div className="flex-1">
+                <div className="font-semibold text-slate-900">{name || "未命名"}</div>
+                <div className="text-xs text-slate-500">{email || "未设置邮箱"}</div>
+                <div className="mt-1.5">
+                  <Button size="sm" variant="outline" className="h-7 text-xs">
+                    更换头像
+                  </Button>
+                </div>
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

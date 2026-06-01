@@ -21,10 +21,13 @@ import {
   ChevronRight,
   Menu,
   X,
+  Upload,
+  Clock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { AVATAR_PRESETS, getAvatarUrl } from "@/lib/avatars";
 
 // ============= HEADER =============
 function Header() {
@@ -235,28 +238,37 @@ function Hero() {
 
 function HeroPreview() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-12 gap-0 min-h-[400px]">
+    <div className="grid grid-cols-1 md:grid-cols-12 gap-0 min-h-[440px]">
       {/* Sidebar */}
       <div className="md:col-span-3 bg-slate-50 border-r border-slate-200 p-4">
-        <div className="text-xs font-semibold text-slate-900 mb-3">工作区</div>
-        {["上传产品图", "白底图生成", "生活场景图", "AI 模特图", "批量处理", "品牌风格库"].map(
-          (item, i) => (
-            <div
-              key={item}
-              className={cn(
-                "px-3 py-2 rounded-lg text-xs mb-1 transition-colors",
-                i === 0
-                  ? "bg-blue-600 text-white font-semibold"
-                  : "text-slate-600 hover:bg-slate-100"
-              )}
-            >
-              {item}
-            </div>
-          )
-        )}
-        <div className="mt-6 text-xs font-semibold text-slate-900 mb-3">平台适配</div>
+        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-3">
+          工作区
+        </div>
+        {[
+          { icon: Upload, label: "上传产品图", active: true },
+          { icon: ImageIcon, label: "白底图生成" },
+          { icon: Sparkles, label: "AI 场景图" },
+          { icon: Wand2, label: "AI 模特图" },
+          { icon: Layers, label: "批量处理" },
+        ].map((item) => (
+          <div
+            key={item.label}
+            className={cn(
+              "px-3 py-2 rounded-lg text-xs mb-1 transition-colors flex items-center gap-2",
+              item.active
+                ? "bg-blue-600 text-white font-semibold"
+                : "text-slate-600 hover:bg-slate-100"
+            )}
+          >
+            <item.icon className="w-3.5 h-3.5" />
+            {item.label}
+          </div>
+        ))}
+        <div className="mt-5 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-3">
+          平台适配
+        </div>
         <div className="flex flex-wrap gap-1.5">
-          {["Amazon", "Shopify", "eBay", "TikTok", "FB", "IG"].map((p) => (
+          {["Amazon", "Shopify", "eBay", "TikTok"].map((p) => (
             <span
               key={p}
               className="px-2 py-1 rounded text-[10px] font-medium bg-white border border-slate-200 text-slate-700"
@@ -265,60 +277,102 @@ function HeroPreview() {
             </span>
           ))}
         </div>
-      </div>
 
-      {/* Main: Upload zone */}
-      <div className="md:col-span-5 p-6 border-r border-slate-200 bg-white">
-        <div className="upload-zone rounded-xl p-8 h-full flex flex-col items-center justify-center min-h-[320px]">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mb-4 shadow-lg shadow-blue-500/25">
-            <ImageIcon className="w-8 h-8 text-white" />
+        {/* 真人头像用户卡 */}
+        <div className="mt-5 p-2.5 rounded-lg bg-white border border-slate-200 flex items-center gap-2">
+          <img
+            src={AVATAR_PRESETS.lisa}
+            alt="Lisa"
+            className="w-6 h-6 rounded-full object-cover"
+          />
+          <div className="flex-1 min-w-0">
+            <div className="text-[10px] font-semibold text-slate-900 truncate">
+              Lisa Wang
+            </div>
+            <div className="text-[9px] text-slate-500">Pro 套餐</div>
           </div>
-          <div className="text-sm font-semibold text-slate-900">拖入产品图</div>
-          <div className="text-xs text-slate-500 mt-1">支持 JPG · PNG · WebP · 最多 50 张</div>
-          <Button size="sm" className="mt-4">
-            选择文件
-          </Button>
+          <Badge variant="success" size="sm" className="text-[9px]">
+            在线
+          </Badge>
         </div>
       </div>
 
-      {/* Right: Generated results */}
-      <div className="md:col-span-4 p-4 bg-slate-50/50">
-        <div className="text-xs font-semibold text-slate-900 mb-3 flex items-center justify-between">
-          <span>生成结果</span>
-          <span className="text-blue-600">4 / 4</span>
+      {/* Main: Upload zone with real product preview */}
+      <div className="md:col-span-5 p-5 border-r border-slate-200 bg-white">
+        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-3">
+          上传产品图
         </div>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="rounded-xl border-2 border-dashed border-slate-200 p-4 h-full min-h-[340px] flex flex-col items-center justify-center relative overflow-hidden bg-gradient-to-br from-slate-50 to-white">
+          {/* 模拟产品图占位：无线耳机白底图 */}
+          <div className="w-44 h-44 rounded-2xl bg-white shadow-elevated flex items-center justify-center mb-3 relative">
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-slate-50 to-white" />
+            <div className="relative w-28 h-20 rounded-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
+              <div className="w-20 h-12 rounded-full bg-slate-700 border-2 border-slate-500" />
+              <div className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-8 rounded-r-full bg-slate-700 border-y-2 border-r-2 border-slate-500" />
+            </div>
+          </div>
+          <div className="text-xs font-semibold text-slate-900">wireless-headphones.jpg</div>
+          <div className="text-[10px] text-slate-500 mt-0.5 font-mono">
+            2.4 MB · 已识别为「无线耳机」
+          </div>
+          <div className="mt-3 flex items-center gap-1.5 text-[10px] text-slate-500">
+            <Check className="w-3 h-3 text-emerald-500" />
+            已自动适配 6 平台尺寸
+          </div>
+        </div>
+      </div>
+
+      {/* Right: Generated results with real images */}
+      <div className="md:col-span-4 p-4 bg-slate-50/50">
+        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center justify-between">
+          <span>生成结果 · 5 张</span>
+          <span className="text-blue-600 flex items-center gap-1">
+            <Check className="w-3 h-3" />
+            全部完成
+          </span>
+        </div>
+        <div className="grid grid-cols-3 gap-2">
           {[
-            { name: "白底主图", gradient: "from-slate-100 to-slate-200" },
-            { name: "场景图", gradient: "from-amber-100 to-orange-200" },
-            { name: "模特图", gradient: "from-rose-100 to-pink-200" },
-            { name: "社交图", gradient: "from-blue-100 to-cyan-200" },
-          ].map((item) => (
+            { name: "白底", seed: "h1" },
+            { name: "客厅", seed: "h2" },
+            { name: "模特", seed: "h3" },
+            { name: "户外", seed: "h4" },
+            { name: "厨房", seed: "h5" },
+            { name: "广告", seed: "h6" },
+          ].map((item, i) => (
             <div
-              key={item.name}
-              className="aspect-square rounded-lg overflow-hidden border border-slate-200 bg-white hover-lift"
+              key={item.seed}
+              className="aspect-square rounded-lg overflow-hidden border border-slate-200 bg-white group cursor-pointer relative"
             >
-              <div
-                className={cn(
-                  "w-full h-3/4 bg-gradient-to-br flex items-center justify-center",
-                  item.gradient
-                )}
-              >
-                <div className="w-12 h-12 rounded bg-white/60 backdrop-blur" />
-              </div>
-              <div className="px-2 py-1.5 text-[10px] font-medium text-slate-700">
-                {item.name}
-              </div>
+              <img
+                src={`https://picsum.photos/seed/${item.seed}/120/120`}
+                alt={item.name}
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform"
+              />
+              {i === 0 && (
+                <div className="absolute top-1 right-1">
+                  <div className="w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center">
+                    <Check className="w-2.5 h-2.5 text-white" />
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>
-        <div className="mt-3 p-2.5 rounded-lg bg-white border border-slate-200 flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <div className="text-[11px] text-slate-600 flex-1">3 张已完成，可下载</div>
-          <Button size="sm" variant="ghost" className="h-6 px-2 text-[10px]">
-            全部下载
-          </Button>
+        <div className="mt-3 grid grid-cols-2 gap-2">
+          <div className="p-2 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center gap-1.5">
+            <Clock className="w-3 h-3 text-emerald-600" />
+            <div className="text-[10px] text-emerald-700 font-mono">3.2s 全部完成</div>
+          </div>
+          <div className="p-2 rounded-lg bg-blue-50 border border-blue-100 flex items-center gap-1.5">
+            <Zap className="w-3 h-3 text-blue-600" />
+            <div className="text-[10px] text-blue-700 font-mono">$0.15 总成本</div>
+          </div>
         </div>
+        <Button size="sm" className="w-full mt-2 h-8 text-xs">
+          全部下载
+          <ArrowRight className="w-3 h-3" />
+        </Button>
       </div>
     </div>
   );
@@ -522,28 +576,34 @@ function HowItWorks() {
 function Personas() {
   const personas = [
     {
-      avatar: "L",
-      gradient: "from-blue-500 to-cyan-500",
-      name: "Lisa",
+      avatar: AVATAR_PRESETS.lisa,
+      name: "Lisa Wang",
       role: "精品站卖家",
+      company: "深圳 · WaveAudio 跨境音频",
+      scale: "月 GMV $180K",
       pain: "每月推 5 个新品，要 1 套主图 + 5 张场景图 + 1 条视频",
       saving: "月省 $2,000 外包费",
+      timeSaved: "3 天 → 5 分钟",
     },
     {
-      avatar: "M",
-      gradient: "from-purple-500 to-pink-500",
-      name: "Mike",
+      avatar: AVATAR_PRESETS.mike,
+      name: "Mike Chen",
       role: "铺货型卖家",
+      company: "广州 · 1688 跨境铺货",
+      scale: "日测 30 个新品",
       pain: "每天测 20+ 新品，每个品要 5-10 条视频投流",
       saving: "1 小时出 10 条视频",
+      timeSaved: "3 天 → 1 小时",
     },
     {
-      avatar: "S",
-      gradient: "from-amber-500 to-orange-500",
-      name: "Sara",
+      avatar: AVATAR_PRESETS.sara,
+      name: "Sara Liu",
       role: "代运营工作室",
+      company: "杭州 · Bloom Studio",
+      scale: "服务 18 个客户",
       pain: "客户每月都有新素材需求，人天成本是瓶颈",
       saving: "设计师不用加班",
+      timeSaved: "人天 -60%",
     },
   ];
 
@@ -575,19 +635,20 @@ function Personas() {
               viewport={{ once: true }}
               className="p-6 rounded-2xl border border-slate-200 bg-white hover-lift"
             >
-              <div className="flex items-center gap-4 mb-4">
-                <div
-                  className={cn(
-                    "w-12 h-12 rounded-full bg-gradient-to-br flex items-center justify-center text-white font-bold text-lg",
-                    p.gradient
-                  )}
-                >
-                  {p.avatar}
-                </div>
-                <div>
+              <div className="flex items-center gap-3 mb-4">
+                <img
+                  src={p.avatar}
+                  alt={p.name}
+                  className="w-12 h-12 rounded-full object-cover ring-1 ring-slate-200"
+                />
+                <div className="min-w-0 flex-1">
                   <div className="font-semibold text-slate-900">{p.name}</div>
-                  <div className="text-sm text-slate-500">{p.role}</div>
+                  <div className="text-xs text-slate-500 truncate">{p.role}</div>
                 </div>
+              </div>
+              <div className="text-xs text-slate-500 mb-4 pb-4 border-b border-slate-100">
+                <div className="truncate">{p.company}</div>
+                <div className="mt-0.5">{p.scale}</div>
               </div>
               <div className="space-y-3 text-sm">
                 <div>
@@ -603,6 +664,9 @@ function Personas() {
                   <div className="text-blue-600 font-semibold flex items-center gap-1">
                     <Zap className="w-3.5 h-3.5" />
                     {p.saving}
+                  </div>
+                  <div className="text-xs text-slate-500 mt-1 font-mono">
+                    {p.timeSaved}
                   </div>
                 </div>
               </div>
@@ -752,30 +816,36 @@ function Testimonials() {
         <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
             {
-              name: "Lisa",
-              role: "Amazon FBA 卖家",
-              avatar: "L",
+              name: "Lisa Wang",
+              role: "WaveAudio 主理人",
+              company: "深圳 · Amazon FBA · 月 GMV $180K",
+              avatar: AVATAR_PRESETS.lisa,
               gradient: "from-blue-500 to-cyan-500",
               quote:
-                "用 PixVideo 一个月省了 2000 美金的拍摄费。主图质量比我之前外包的还要稳定。",
+                "用 PixVideo 一个月省了 $2,000 拍摄费。我们主图转化率比之前越南外包的稳定多了，30 天退货率降了 23%。",
+              metric: "转化 +12%",
               rating: 5,
             },
             {
-              name: "Mike",
-              role: "TikTok Shop 铺货",
-              avatar: "M",
+              name: "Mike Chen",
+              role: "1688 跨境铺货",
+              company: "广州 · TikTok Shop · 日测 30 品",
+              avatar: AVATAR_PRESETS.mike,
               gradient: "from-purple-500 to-pink-500",
               quote:
-                "1 小时出 10 条视频，每条都基于已爆款结构。现在测新品的效率是之前的 10 倍。",
+                "1 小时出 10 条视频，每条都基于已爆款结构。原来 3 天的工作量现在 1 小时搞定，5 月份我们铺货速度翻倍。",
+              metric: "测品速度 ×10",
               rating: 5,
             },
             {
-              name: "Sara",
-              role: "代运营工作室主理人",
-              avatar: "S",
+              name: "Sara Liu",
+              role: "Bloom Studio 主理人",
+              company: "杭州 · 服务 18 个客户",
+              avatar: AVATAR_PRESETS.sara,
               gradient: "from-amber-500 to-orange-500",
               quote:
-                "我设计师不用加班了。我们现在能接比之前多 3 倍的客户，利润还更高。",
+                "我设计师不用加班了。客户从 6 个扩到 18 个，利润率反而从 18% 涨到 32%，因为人天成本砍掉一大半。",
+              metric: "人天 -60%",
               rating: 5,
             },
           ].map((t, i) => (
@@ -787,26 +857,28 @@ function Testimonials() {
               viewport={{ once: true }}
               className="p-6 rounded-2xl border border-slate-200 bg-white"
             >
-              <div className="flex gap-1 mb-4">
+              <div className="flex gap-1 mb-3">
                 {Array.from({ length: t.rating }).map((_, j) => (
                   <Star key={j} className="w-4 h-4 fill-amber-400 text-amber-400" />
                 ))}
+              </div>
+              <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold mb-3">
+                <TrendingUp className="w-3 h-3" />
+                {t.metric}
               </div>
               <p className="text-slate-700 text-sm leading-relaxed mb-6">
                 "{t.quote}"
               </p>
               <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
-                <div
-                  className={cn(
-                    "w-10 h-10 rounded-full bg-gradient-to-br flex items-center justify-center text-white font-bold",
-                    t.gradient
-                  )}
-                >
-                  {t.avatar}
-                </div>
-                <div>
+                <img
+                  src={t.avatar}
+                  alt={t.name}
+                  className="w-10 h-10 rounded-full object-cover ring-1 ring-slate-200"
+                />
+                <div className="min-w-0 flex-1">
                   <div className="text-sm font-semibold text-slate-900">{t.name}</div>
-                  <div className="text-xs text-slate-500">{t.role}</div>
+                  <div className="text-xs text-slate-500 truncate">{t.role}</div>
+                  <div className="text-[10px] text-slate-400 truncate mt-0.5">{t.company}</div>
                 </div>
               </div>
             </motion.div>

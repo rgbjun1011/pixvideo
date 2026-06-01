@@ -689,6 +689,16 @@ function ResultsGrid({
 function ResultCard({ result }: { result: { id: string; url: string; type: string; label: string } }) {
   const [copied, setCopied] = useState(false);
 
+  // 模拟文件大小和分辨率
+  const fakeSize = (Math.random() * 3 + 0.5).toFixed(1);
+  const fakeRes = result.type === "background-removed" || result.type === "transparent"
+    ? "2400×2400"
+    : result.type === "white-bg"
+      ? "2000×2000"
+      : result.type === "model"
+        ? "1600×2000"
+        : "2048×2048";
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -718,18 +728,29 @@ function ResultCard({ result }: { result: { id: string; url: string; type: strin
           <Button
             size="icon"
             className="h-9 w-9"
-            onClick={() => downloadImage(result.url, `pixvideo-${result.id}.png`)}
+            onClick={() => {
+              downloadImage(result.url, `pixvideo-${result.id}.png`);
+              toast.success("已下载", {
+                description: `${fakeRes} · ${fakeSize} MB · PNG`,
+              });
+            }}
           >
             <Download className="w-4 h-4" />
           </Button>
         </div>
       </div>
-      <div className="p-2.5 flex items-center justify-between">
-        <div className="text-xs font-semibold text-slate-700">{result.label}</div>
-        <Badge variant="success" size="sm">
-          <Check className="w-2.5 h-2.5" />
-          完成
-        </Badge>
+      <div className="p-2.5">
+        <div className="flex items-center justify-between mb-1">
+          <div className="text-xs font-semibold text-slate-700 truncate">{result.label}</div>
+          <Badge variant="success" size="sm">
+            <Check className="w-2.5 h-2.5" />
+          </Badge>
+        </div>
+        <div className="flex items-center gap-1.5 text-[10px] text-slate-500 font-mono">
+          <span>{fakeRes}</span>
+          <span>·</span>
+          <span>{fakeSize} MB</span>
+        </div>
       </div>
     </motion.div>
   );

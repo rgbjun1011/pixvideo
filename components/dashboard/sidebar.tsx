@@ -16,6 +16,7 @@ import {
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAppStore } from "@/lib/store";
+import { getAvatarUrl } from "@/lib/avatars";
 
 const navItems = [
   { href: "/dashboard", label: "工作台", icon: Sparkles },
@@ -112,16 +113,18 @@ export function Sidebar() {
           onClick={() => setUserMenuOpen(!userMenuOpen)}
           className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"
         >
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-pink-500 flex items-center justify-center text-white text-xs font-bold">
-            L
-          </div>
-          <div className="flex-1 text-left">
-            <div className="text-sm font-semibold text-slate-900">Lisa</div>
+          <img
+            src={getAvatarUrl("lisa", "female")}
+            alt="Lisa"
+            className="w-8 h-8 rounded-full object-cover ring-1 ring-slate-200"
+          />
+          <div className="flex-1 text-left min-w-0">
+            <div className="text-sm font-semibold text-slate-900 truncate">Lisa Wang</div>
             <div className="text-xs text-slate-500">Pro 套餐</div>
           </div>
           <ChevronUp
             className={cn(
-              "w-4 h-4 text-slate-400 transition-transform",
+              "w-4 h-4 text-slate-400 transition-transform shrink-0",
               !userMenuOpen && "rotate-180"
             )}
           />

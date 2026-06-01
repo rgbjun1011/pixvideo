@@ -131,10 +131,42 @@ export default function DashboardPage() {
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {[
-            { icon: TrendingUp, label: "本月生成", value: `${usage.images + usage.videos}`, color: "text-blue-600" },
-            { icon: Zap, label: "节省成本", value: `$${(usage.images * 8 + usage.videos * 80).toFixed(0)}`, color: "text-emerald-600" },
-            { icon: Clock, label: "项目数", value: `${assets.length}`, color: "text-purple-600" },
-            { icon: Sparkles, label: "本月成本", value: `$${usage.cost.toFixed(2)}`, color: "text-amber-600" },
+            {
+              icon: TrendingUp,
+              label: "本月生成",
+              value: `${usage.images + usage.videos}`,
+              unit: "次",
+              trend: assets.length > 0 ? "+23%" : "—",
+              trendUp: true,
+              color: "text-blue-600",
+            },
+            {
+              icon: Zap,
+              label: "相比外包节省",
+              value: `$${(usage.images * 8 + usage.videos * 80).toFixed(0)}`,
+              unit: "",
+              trend: assets.length > 0 ? "+18%" : "—",
+              trendUp: true,
+              color: "text-emerald-600",
+            },
+            {
+              icon: Clock,
+              label: "项目数",
+              value: `${assets.length}`,
+              unit: "个",
+              trend: assets.length > 0 ? `${assets.length} 个新增` : "—",
+              trendUp: true,
+              color: "text-purple-600",
+            },
+            {
+              icon: Sparkles,
+              label: "AI 调用成本",
+              value: `$${usage.cost.toFixed(2)}`,
+              unit: "",
+              trend: assets.length > 0 ? "-67% vs 外包" : "—",
+              trendUp: true,
+              color: "text-amber-600",
+            },
           ].map((s, i) => (
             <motion.div
               key={s.label}
@@ -143,8 +175,24 @@ export default function DashboardPage() {
               transition={{ duration: 0.4, delay: 0.2 + i * 0.05 }}
             >
               <Card className="p-5">
-                <s.icon className={`w-5 h-5 ${s.color} mb-3`} />
-                <div className="text-2xl font-bold text-slate-900">{s.value}</div>
+                <div className="flex items-start justify-between mb-3">
+                  <s.icon className={`w-5 h-5 ${s.color}`} />
+                  {assets.length > 0 && (
+                    <Badge
+                      variant={s.trendUp ? "success" : "danger"}
+                      size="sm"
+                      className="text-[10px]"
+                    >
+                      {s.trend}
+                    </Badge>
+                  )}
+                </div>
+                <div className="flex items-baseline gap-1">
+                  <div className="text-2xl font-bold text-slate-900">{s.value}</div>
+                  {s.unit && (
+                    <div className="text-sm text-slate-500 font-medium">{s.unit}</div>
+                  )}
+                </div>
                 <div className="text-xs text-slate-500 mt-1">{s.label}</div>
               </Card>
             </motion.div>
